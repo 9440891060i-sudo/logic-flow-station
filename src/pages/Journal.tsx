@@ -1,4 +1,5 @@
-import { journalEntries } from "@/lib/mock-data";
+import { journalEntries, analyticsData } from "@/lib/mock-data";
+import { Progress } from "@/components/ui/progress";
 import {
   Table,
   TableBody,
@@ -70,6 +71,45 @@ const Journal = () => {
           </TableBody>
         </Table>
       </div>
+
+      {/* Analytics */}
+      <section className="space-y-3">
+        <h2 className="terminal-text">Analytics</h2>
+        <div className="space-y-4">
+          {[
+            { label: "Rule Adherence", value: analyticsData.ruleAdherence },
+            { label: "Session Discipline", value: analyticsData.sessionDiscipline },
+            { label: "Risk Compliance", value: analyticsData.riskCompliance },
+          ].map((metric) => (
+            <div key={metric.label} className="glass-panel p-4 space-y-2">
+              <div className="flex justify-between">
+                <span className="terminal-text">{metric.label}</span>
+                <span className="font-mono text-xs text-foreground">{metric.value}%</span>
+              </div>
+              <Progress value={metric.value} className="h-1 bg-border [&>div]:bg-foreground" />
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* Weekly Summary */}
+      <section className="space-y-3">
+        <h2 className="terminal-text">Weekly Summary</h2>
+        <div className="glass-panel divide-y divide-border">
+          {analyticsData.weeklyStats.map((w) => (
+            <div key={w.week} className="px-5 py-3 flex items-center justify-between">
+              <span className="font-mono text-xs text-foreground">{w.week}</span>
+              <div className="flex gap-6">
+                <span className="font-mono text-xs text-muted-foreground">{w.trades} trades</span>
+                <span className="font-mono text-xs text-muted-foreground">{w.adherence}% adherence</span>
+                <span className={`font-mono text-xs ${w.pnl >= 0 ? "text-foreground" : "text-destructive"}`}>
+                  {w.pnl > 0 ? "+" : ""}{w.pnl} pips
+                </span>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
     </div>
   );
 };

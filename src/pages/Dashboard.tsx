@@ -1,17 +1,40 @@
 import { useState } from "react";
-import { monitoringItems, recentAlerts, systemStatus } from "@/lib/mock-data";
+import { systemStatus } from "@/lib/mock-data";
 import { Switch } from "@/components/ui/switch";
+import { Input } from "@/components/ui/input";
+
+const connectionConfigs: Record<string, { fields: { label: string; placeholder: string; key: string }[] }> = {
+  WhatsApp: {
+    fields: [
+      { label: "Phone Number", placeholder: "+1 234 567 8900", key: "phone" },
+      { label: "API Token", placeholder: "whatsapp-api-token", key: "token" },
+    ],
+  },
+  MT5: {
+    fields: [
+      { label: "Account Number", placeholder: "48291", key: "account" },
+      { label: "Server", placeholder: "ICMarkets-Live", key: "server" },
+      { label: "Password", placeholder: "••••••••", key: "password" },
+    ],
+  },
+};
 
 const Dashboard = () => {
   const [toggles, setToggles] = useState<Record<string, boolean>>({
     WhatsApp: true,
     MT5: true,
   });
-
-  const dashboardStatus = systemStatus.filter((s) => s.name !== "TradingView");
+  const [configs, setConfigs] = useState<Record<string, Record<string, string>>>({});
 
   const handleToggle = (name: string) => {
     setToggles((prev) => ({ ...prev, [name]: !prev[name] }));
+  };
+
+  const updateField = (service: string, key: string, value: string) => {
+    setConfigs((prev) => ({
+      ...prev,
+      [service]: { ...prev[service], [key]: value },
+    }));
   };
 
   return (
@@ -23,66 +46,53 @@ const Dashboard = () => {
         <p className="text-xs text-muted-foreground mt-1 font-mono">System overview</p>
       </div>
 
-      {/* System Status */}
+      {/* Connections */}
       <section className="space-y-3">
-        <h2 className="terminal-text">System Status</h2>
-        <div className="glass-panel p-4 space-y-3">
-          {dashboardStatus.map((s) => (
-            <div key={s.name} className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <span
-                  className={`status-dot ${
-                    toggles[s.name] && s.status === "connected" ? "status-online" : "status-offline"
-                  }`}
-                />
-                <span className="font-mono text-xs text-foreground">{s.name}</span>
-              </div>
-              <div className="flex items-center gap-3">
-                <span className="font-mono text-xs text-muted-foreground">
-                  {toggles[s.name] ? s.detail : "Disabled"}
-                </span>
-                <Switch
-                  checked={toggles[s.name] || false}
-                  onCheckedChange={() => handleToggle(s.name)}
-                />
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
+        <h2 className="terminal-text">Connections</h2>
+        <div className="space-y-3">
+          {systemStatus.map((s) => {
+            const config = connectionConfigs[s.name];
+            return (
+              <div key={s.name} className="glass-panel p-5 space-y-4">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <span
+                      className={`status-dot ${
+                        toggles[s.name] ? "status-online" : "status-offline"
+                      }`}
+                    />
+                    <span className="font-mono text-sm text-foreground">{s.name}</span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <span className="font-mono text-xs text-muted-foreground">
+                      {toggles[s.name] ? s.detail : "Disabled"}
+                    </span>
+                    <Switch
+                      checked={toggles[s.name] || false}
+                      onCheckedChange={() => handleToggle(s.name)}
+                    />
+                  </div>
+                </div>
 
-      {/* Monitoring */}
-      <section className="space-y-3">
-        <h2 className="terminal-text">Active Monitoring</h2>
-        <div className="glass-panel divide-y divide-border">
-          {monitoringItems.map((m, i) => (
-            <div key={i} className="flex items-center justify-between px-4 py-3">
-              <div className="flex items-center gap-4">
-                <span
-                  className={`status-dot ${
-                    m.status === "active" ? "status-online" : "status-warning"
-                  }`}
-                />
-                <span className="font-mono text-xs text-foreground w-20">{m.pair}</span>
-                <span className="font-mono text-xs text-muted-foreground">{m.condition}</span>
+                {toggles[s.name] && config && (
+                  <div className="space-y-3">
+                    {config.fields.map((f) => (
+                      <div key={f.key} className="space-y-1">
+                        <label className="terminal-text">{f.label}</label>
+                        <Input
+                          value={configs[s.name]?.[f.key] || ""}
+                          onChange={(e) => updateField(s.name, f.key, e.target.value)}
+                          className="bg-background border-border font-mono text-sm"
+                          placeholder={f.placeholder}
+                          type={f.key === "password" || f.key === "token" ? "password" : "text"}
+                        />
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
-              <span className="terminal-text">{m.session}</span>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* Recent Alerts */}
-      <section className="space-y-3">
-        <h2 className="terminal-text">Recent Alerts</h2>
-        <div className="glass-panel divide-y divide-border">
-          {recentAlerts.map((a) => (
-            <div key={a.id} className="px-4 py-3 flex gap-4">
-              <span className="font-mono text-xs text-muted-foreground w-16 shrink-0">{a.time}</span>
-              <span className="font-mono text-xs text-foreground w-16 shrink-0">{a.pair}</span>
-              <span className="font-mono text-xs text-muted-foreground flex-1">{a.message}</span>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </section>
     </div>
