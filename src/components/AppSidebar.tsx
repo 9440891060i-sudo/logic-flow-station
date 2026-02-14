@@ -1,12 +1,9 @@
 import {
   LayoutDashboard,
-  Link,
   BookOpen,
   Bell,
   Shield,
-  ScrollText,
   FileText,
-  BarChart3,
   Settings,
   Terminal,
 } from "lucide-react";
@@ -25,13 +22,10 @@ import {
 
 const navItems = [
   { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
-  { title: "Connections", url: "/connections", icon: Link },
   { title: "Definitions", url: "/definitions", icon: BookOpen },
   { title: "Alerts", url: "/alerts", icon: Bell },
-  { title: "Execution", url: "/execution", icon: Shield },
-  { title: "Rules", url: "/rules", icon: ScrollText },
+  { title: "Executions", url: "/execution", icon: Shield },
   { title: "Journal", url: "/journal", icon: FileText },
-  { title: "Analytics", url: "/analytics", icon: BarChart3 },
   { title: "Settings", url: "/settings", icon: Settings },
 ];
 
