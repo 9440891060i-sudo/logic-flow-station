@@ -1,11 +1,24 @@
+import { useState } from "react";
 import { monitoringItems, recentAlerts, systemStatus } from "@/lib/mock-data";
+import { Switch } from "@/components/ui/switch";
 
 const Dashboard = () => {
+  const [toggles, setToggles] = useState<Record<string, boolean>>({
+    WhatsApp: true,
+    MT5: true,
+  });
+
+  const dashboardStatus = systemStatus.filter((s) => s.name !== "TradingView");
+
+  const handleToggle = (name: string) => {
+    setToggles((prev) => ({ ...prev, [name]: !prev[name] }));
+  };
+
   return (
     <div className="space-y-8 max-w-5xl">
       <div>
         <h1 className="font-mono text-sm font-semibold tracking-widest text-foreground uppercase">
-          Command Center
+          Dashboard
         </h1>
         <p className="text-xs text-muted-foreground mt-1 font-mono">System overview</p>
       </div>
@@ -14,17 +27,25 @@ const Dashboard = () => {
       <section className="space-y-3">
         <h2 className="terminal-text">System Status</h2>
         <div className="glass-panel p-4 space-y-3">
-          {systemStatus.map((s) => (
+          {dashboardStatus.map((s) => (
             <div key={s.name} className="flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <span
                   className={`status-dot ${
-                    s.status === "connected" ? "status-online" : "status-offline"
+                    toggles[s.name] && s.status === "connected" ? "status-online" : "status-offline"
                   }`}
                 />
                 <span className="font-mono text-xs text-foreground">{s.name}</span>
               </div>
-              <span className="font-mono text-xs text-muted-foreground">{s.detail}</span>
+              <div className="flex items-center gap-3">
+                <span className="font-mono text-xs text-muted-foreground">
+                  {toggles[s.name] ? s.detail : "Disabled"}
+                </span>
+                <Switch
+                  checked={toggles[s.name] || false}
+                  onCheckedChange={() => handleToggle(s.name)}
+                />
+              </div>
             </div>
           ))}
         </div>

@@ -5,7 +5,11 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 
 const SettingsPage = () => {
   const [name, setName] = useState("Trader");
+  const [email, setEmail] = useState("trader@ptos.com");
   const [timezone, setTimezone] = useState("UTC");
+  const [currentPassword, setCurrentPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
 
   return (
     <div className="space-y-8 max-w-3xl">
@@ -28,6 +32,15 @@ const SettingsPage = () => {
             />
           </div>
           <div className="space-y-1">
+            <label className="terminal-text">Email</label>
+            <Input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="bg-background border-border font-mono text-sm"
+            />
+          </div>
+          <div className="space-y-1">
             <label className="terminal-text">Timezone</label>
             <Select value={timezone} onValueChange={setTimezone}>
               <SelectTrigger className="bg-background border-border font-mono text-sm">
@@ -43,7 +56,44 @@ const SettingsPage = () => {
             </Select>
           </div>
         </div>
-        <Button className="font-mono text-xs tracking-wider uppercase">Save</Button>
+        <Button className="font-mono text-xs tracking-wider uppercase">Save Profile</Button>
+      </section>
+
+      <section className="glass-panel p-5 space-y-4">
+        <h2 className="terminal-text">Change Password</h2>
+        <div className="space-y-3">
+          <div className="space-y-1">
+            <label className="terminal-text">Current Password</label>
+            <Input
+              type="password"
+              value={currentPassword}
+              onChange={(e) => setCurrentPassword(e.target.value)}
+              className="bg-background border-border font-mono text-sm"
+              placeholder="••••••••"
+            />
+          </div>
+          <div className="space-y-1">
+            <label className="terminal-text">New Password</label>
+            <Input
+              type="password"
+              value={newPassword}
+              onChange={(e) => setNewPassword(e.target.value)}
+              className="bg-background border-border font-mono text-sm"
+              placeholder="••••••••"
+            />
+          </div>
+          <div className="space-y-1">
+            <label className="terminal-text">Confirm New Password</label>
+            <Input
+              type="password"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              className="bg-background border-border font-mono text-sm"
+              placeholder="••••••••"
+            />
+          </div>
+        </div>
+        <Button className="font-mono text-xs tracking-wider uppercase">Update Password</Button>
       </section>
     </div>
   );

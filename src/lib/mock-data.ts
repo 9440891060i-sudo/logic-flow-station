@@ -19,7 +19,6 @@ export const recentAlerts = [
 export const systemStatus = [
   { name: "WhatsApp", status: "connected" as const, detail: "+44 *** *** 8842" },
   { name: "MT5", status: "connected" as const, detail: "Account #48291 — IC Markets" },
-  { name: "TradingView", status: "disconnected" as const, detail: "Webhook not configured" },
 ];
 
 export const conceptDefinitions = {

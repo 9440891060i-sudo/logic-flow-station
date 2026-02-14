@@ -6,14 +6,13 @@ import { Button } from "@/components/ui/button";
 
 const Login = () => {
   const navigate = useNavigate();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("trader@ptos.com");
+  const [password, setPassword] = useState("password123");
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
-    // Mock login — navigate to onboarding or dashboard
-    localStorage.setItem("ptos_user", JSON.stringify({ email, onboarded: false }));
-    navigate("/onboarding");
+    localStorage.setItem("ptos_user", JSON.stringify({ email, onboarded: true }));
+    navigate("/dashboard");
   };
 
   return (
@@ -55,13 +54,13 @@ const Login = () => {
             type="submit"
             className="w-full font-mono text-xs tracking-wider uppercase"
           >
-            Access System
+            Login
           </Button>
         </form>
         <p className="text-center text-xs text-muted-foreground">
           No account?{" "}
-          <button onClick={() => navigate("/onboarding")} className="text-foreground underline underline-offset-4">
-            Initialize
+          <button onClick={() => navigate("/signup")} className="text-foreground underline underline-offset-4">
+            Sign Up
           </button>
         </p>
       </div>
